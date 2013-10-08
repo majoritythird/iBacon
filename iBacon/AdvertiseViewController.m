@@ -30,7 +30,7 @@
   self = [super initWithCoder:aDecoder];
 
   if (self) {
-    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] identifier:kMTBeaconIdentifier];
+    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] major:1 minor:2 identifier:kMTBeaconIdentifier];
     _beaconPeripheralData = [self.beaconRegion peripheralDataWithMeasuredPower:nil];
   }
 

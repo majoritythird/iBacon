@@ -27,7 +27,7 @@
   self = [super initWithCoder:aDecoder];
 
   if (self) {
-    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] identifier:kMTBeaconIdentifier];
+    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] major:1 minor:2 identifier:kMTBeaconIdentifier];
     _locManager = [[CLLocationManager alloc] init];
     self.locManager.delegate = self;
   }
@@ -109,6 +109,7 @@
 {
   if (beacons.count > 0) {
     CLBeacon *baconBeacon = [beacons firstObject];
+    [self logIt:[NSString stringWithFormat:@"Major-Minor (%@-%@)", region.major, region.minor]];
 
     if (baconBeacon.proximity == CLProximityFar) {
       [self logIt:@"didRangeBeacons: Far"];
