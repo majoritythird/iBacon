@@ -16,21 +16,17 @@
 
 @implementation RoleSelectionViewController
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
-
 #pragma mark - UIViewController
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+  __weak typeof(self) weakSelf = self;
+
   if ([[segue identifier] isEqualToString:@"Advertise"]) {
     AdvertiseViewController *advertiseViewController = segue.destinationViewController;
 
     advertiseViewController.doneBlock = ^{
-      [self dismissViewControllerAnimated:YES completion:nil];
+      [weakSelf dismissViewControllerAnimated:YES completion:nil];
     };
   }
 
@@ -38,7 +34,7 @@
     ConsumeViewController *consumerViewController = segue.destinationViewController;
 
     consumerViewController.doneBlock = ^{
-      [self dismissViewControllerAnimated:YES completion:nil];
+      [weakSelf dismissViewControllerAnimated:YES completion:nil];
     };
   }
 }

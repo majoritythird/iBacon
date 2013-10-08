@@ -13,10 +13,11 @@
 NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
 
 @interface AdvertiseViewController ()
-<CBPeripheralManagerDelegate>
+<CBPeripheralManagerDelegate,UIAlertViewDelegate>
 
-@property(nonatomic,strong) CBPeripheralManager *peripheralManager;
+@property(nonatomic,strong) UIAlertView *alertView;
 @property(nonatomic,strong) NSDictionary *beaconPeripheralData;
+@property(nonatomic,strong) CBPeripheralManager *peripheralManager;
 
 @end
 
@@ -30,8 +31,9 @@ NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
   if (self) {
     NSUUID *proximityUUID = [[NSUUID alloc] initWithUUIDString:[self proximityUUID]];
     CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:@"com.majoritythird.baconregion"];
-    _beaconPeripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
-    _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+    self.beaconPeripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+
     [self.peripheralManager startAdvertising:self.beaconPeripheralData];
   }
   return self;
@@ -44,8 +46,18 @@ NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
   return [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kMTProximityUUIDKey];
 }
 
+- (void)showNoBluetoothAlert
+{
+  if (!self.alertView.visible) {
+    self.alertView = [[UIAlertView alloc] initWithTitle:@"No Bluetooth" message:@"Please enable bluetooth" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [self.alertView show];
+  }
+}
+
 - (IBAction)stopAdvertising:(id)sender {
-  [self.peripheralManager stopAdvertising];
+  if (self.peripheralManager.state >= CBPeripheralManagerStatePoweredOn) {
+    [self.peripheralManager stopAdvertising];
+  }
   self.doneBlock();
 }
 
@@ -53,22 +65,24 @@ NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
 {
-  NSLog(@"foop");
+  if (error || self.peripheralManager.state < CBPeripheralManagerStatePoweredOn) {
+    [self showNoBluetoothAlert];
+  }
 }
 
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheralManager
 {
   if (peripheralManager.state < CBPeripheralManagerStatePoweredOn) {
-    //    [self.peripheralManager stopAdvertising];
+    [self.peripheralManager stopAdvertising];
+    [self showNoBluetoothAlert];
   }
 }
 
-#pragma mark - UIViewController
+#pragma mark - UIAlertVewDelegate
 
-- (void)viewDidLoad
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
-  [super viewDidLoad];
-	// Do any additional setup after loading the view.
+  self.doneBlock();
 }
 
 @end
