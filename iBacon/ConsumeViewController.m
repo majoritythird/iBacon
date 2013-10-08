@@ -74,6 +74,15 @@
 - (void)locationManager:(CLLocationManager *)manager didDetermineState:(CLRegionState)state forRegion:(CLRegion *)region
 {
   [self logIt:@"didDetermineState" boolValue:state];
+
+  if ([CLLocationManager isRangingAvailable]) {
+    if (state == CLRegionStateInside) {
+      [manager startRangingBeaconsInRegion:self.beaconRegion];
+    }
+    else if (state == CLRegionStateOutside || state == CLRegionStateUnknown) {
+      [manager stopRangingBeaconsInRegion:self.beaconRegion];
+    }
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didFailWithError:(NSError *)error
@@ -84,11 +93,33 @@
 - (void)locationManager:(CLLocationManager *)manager didEnterRegion:(CLRegion *)region
 {
   [self logIt:@"didEnterRegion"];
+
+  if ([CLLocationManager isRangingAvailable]) {
+    [manager startRangingBeaconsInRegion:self.beaconRegion];
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didExitRegion:(CLRegion *)region
 {
   [self logIt:@"didExitRegion"];
+  [manager stopRangingBeaconsInRegion:self.beaconRegion];
+}
+
+- (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region
+{
+  if (beacons.count > 0) {
+    CLBeacon *baconBeacon = [beacons firstObject];
+
+    if (baconBeacon.proximity == CLProximityFar) {
+      [self logIt:@"didRangeBeacons: Far"];
+    }
+    else if (baconBeacon.proximity == CLProximityNear) {
+      [self logIt:@"didRangeBeacons: Near"];
+    }
+    else if (baconBeacon.proximity == CLProximityImmediate) {
+      [self logIt:@"didRangeBeacons: Immediate"];
+    }
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region
@@ -104,6 +135,11 @@
 - (void)locationManager:(CLLocationManager *)manager monitoringDidFailForRegion:(CLRegion *)region withError:(NSError *)error
 {
   [self logIt:@"monitoringDidFailForRegion"];
+}
+
+- (void)locationManager:(CLLocationManager *)manager rangingBeaconsDidFailForRegion:(CLBeaconRegion *)region withError:(NSError *)error
+{
+  [self logIt:@"rangingBeaconsDidFailForRegion"];
 }
 
 #pragma mark - UIAlertVewDelegate
