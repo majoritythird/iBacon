@@ -49,14 +49,13 @@
   if (boolValue > -1) {
     NSString *formatString = [message stringByAppendingString:@": %d"];
     NSLog(formatString, boolValue);
-    formatString = [@"\n" stringByAppendingString:formatString];
-    self.advertiseLogTextView.text = [self.advertiseLogTextView.text stringByAppendingString:[NSString stringWithFormat:formatString, boolValue]];
-
+    formatString = [formatString stringByAppendingString:@"\n"];
+    self.advertiseLogTextView.text = [[NSString stringWithFormat:formatString, boolValue] stringByAppendingString:self.advertiseLogTextView.text];
   }
   else {
     NSLog(@"%@", message);
-    NSString *newLinedMessage = [@"\n" stringByAppendingString:message];
-    self.advertiseLogTextView.text = [self.advertiseLogTextView.text stringByAppendingString:newLinedMessage];
+    NSString *newLinedMessage = [message stringByAppendingString:@"\n"];
+    self.advertiseLogTextView.text = [newLinedMessage stringByAppendingString:self.advertiseLogTextView.text];
   }
 }
 
