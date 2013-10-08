@@ -14,7 +14,10 @@
 <CBPeripheralManagerDelegate,UIAlertViewDelegate>
 
 @property(nonatomic,strong) UIAlertView *alertView;
+@property(nonatomic,strong) NSDictionary *beaconPeripheralData;
+@property(nonatomic,strong) CLBeaconRegion *beaconRegion;
 @property(nonatomic,strong) CBPeripheralManager *peripheralManager;
+@property(nonatomic,weak) IBOutlet UITextView *advertiseLogTextView;
 
 @end
 
@@ -27,11 +30,8 @@
   self = [super initWithCoder:aDecoder];
 
   if (self) {
-    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] identifier:kMTBeaconIdentifier];
-    NSDictionary *beaconPeripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
-    _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
-
-    [self.peripheralManager startAdvertising:beaconPeripheralData];
+    _beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] identifier:kMTBeaconIdentifier];
+    _beaconPeripheralData = [self.beaconRegion peripheralDataWithMeasuredPower:nil];
   }
 
   return self;
@@ -39,18 +39,31 @@
 
 #pragma mark - Methods
 
+- (void)logIt:(NSString *)message
+{
+  [self logIt:message boolValue:-1];
+}
+
+- (void)logIt:(NSString *)message boolValue:(BOOL)boolValue
+{
+  if (boolValue > -1) {
+    NSString *formatString = [message stringByAppendingString:@": %d"];
+    NSLog(formatString, boolValue);
+    formatString = [@"\n" stringByAppendingString:formatString];
+    self.advertiseLogTextView.text = [self.advertiseLogTextView.text stringByAppendingString:[NSString stringWithFormat:formatString, boolValue]];
+
+  }
+  else {
+    NSLog(@"%@", message);
+    NSString *newLinedMessage = [@"\n" stringByAppendingString:message];
+    self.advertiseLogTextView.text = [self.advertiseLogTextView.text stringByAppendingString:newLinedMessage];
+  }
+}
+
 - (NSUUID *)proximityUUID
 {
   NSString *uuidString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kMTProximityUUIDKey];
   return [[NSUUID alloc] initWithUUIDString:uuidString];
-}
-
-- (void)showNoBluetoothAlert
-{
-  if (!self.alertView.visible) {
-    self.alertView = [[UIAlertView alloc] initWithTitle:@"No Bluetooth" message:@"Please enable bluetooth" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [self.alertView show];
-  }
 }
 
 - (IBAction)stopAdvertising:(id)sender {
@@ -64,16 +77,19 @@
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error
 {
-  if (error || self.peripheralManager.state < CBPeripheralManagerStatePoweredOn) {
-    [self showNoBluetoothAlert];
-  }
+  [self logIt:@"peripheralManagerDidStartAdvertising"];
 }
 
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheralManager
 {
-  if (peripheralManager.state < CBPeripheralManagerStatePoweredOn) {
-    [self.peripheralManager stopAdvertising];
-    [self showNoBluetoothAlert];
+  if (peripheralManager.state == CBPeripheralManagerStatePoweredOn) {
+    [self.peripheralManager startAdvertising:self.beaconPeripheralData];
+  }
+  else {
+    if (!self.alertView.visible) {
+      self.alertView = [[UIAlertView alloc] initWithTitle:@"No Bluetooth" message:@"Please enable bluetooth" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+      [self.alertView show];
+    }
   }
 }
 
@@ -82,6 +98,25 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
   self.doneBlock();
+}
+
+#pragma mark - UIViewController
+
+- (void)viewDidLoad
+{
+  [super viewDidLoad];
+
+  BOOL isMonitoringAvailableForClass = [CLLocationManager isMonitoringAvailableForClass:[self.beaconRegion class]];
+
+  [self logIt:@"isMonitoringAvailableForClass" boolValue:isMonitoringAvailableForClass];
+
+  if (!isMonitoringAvailableForClass) {
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Hardware not supported" message:@"Your device does not support this feature." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alertView show];
+  }
+  else {
+    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+  }
 }
 
 @end

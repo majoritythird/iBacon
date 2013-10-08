@@ -143,6 +143,13 @@
                                     <action selector="stopAdvertising:" destination="GQ6-IH-N9k" eventType="touchUpInside" id="4HV-x2-Hi7"/>
                                 </connections>
                             </button>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XPu-2Q-1j8">
+                                <rect key="frame" x="20" y="173" width="280" height="238"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -153,6 +160,9 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="cI2-ck-RMe"/>
+                    <connections>
+                        <outlet property="advertiseLogTextView" destination="XPu-2Q-1j8" id="XDh-bc-cL5"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3X3-6r-he9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
