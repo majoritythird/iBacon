@@ -10,13 +10,10 @@
 #import <CoreLocation/CoreLocation.h>
 #import "AdvertiseViewController.h"
 
-NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
-
 @interface AdvertiseViewController ()
 <CBPeripheralManagerDelegate,UIAlertViewDelegate>
 
 @property(nonatomic,strong) UIAlertView *alertView;
-@property(nonatomic,strong) NSDictionary *beaconPeripheralData;
 @property(nonatomic,strong) CBPeripheralManager *peripheralManager;
 
 @end
@@ -28,22 +25,24 @@ NSString *const kMTProximityUUIDKey = @"MTProximityUUID";
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
   self = [super initWithCoder:aDecoder];
-  if (self) {
-    NSUUID *proximityUUID = [[NSUUID alloc] initWithUUIDString:[self proximityUUID]];
-    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:proximityUUID identifier:@"com.majoritythird.baconregion"];
-    self.beaconPeripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
-    self.peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
 
-    [self.peripheralManager startAdvertising:self.beaconPeripheralData];
+  if (self) {
+    CLBeaconRegion *beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:[self proximityUUID] identifier:kMTBeaconIdentifier];
+    NSDictionary *beaconPeripheralData = [beaconRegion peripheralDataWithMeasuredPower:nil];
+    _peripheralManager = [[CBPeripheralManager alloc] initWithDelegate:self queue:nil options:nil];
+
+    [self.peripheralManager startAdvertising:beaconPeripheralData];
   }
+
   return self;
 }
 
 #pragma mark - Methods
 
-- (NSString *)proximityUUID
+- (NSUUID *)proximityUUID
 {
-  return [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kMTProximityUUIDKey];
+  NSString *uuidString = [[[NSBundle mainBundle] infoDictionary] objectForKey:(NSString *)kMTProximityUUIDKey];
+  return [[NSUUID alloc] initWithUUIDString:uuidString];
 }
 
 - (void)showNoBluetoothAlert

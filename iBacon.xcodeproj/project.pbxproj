@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		DE5E0DC218035D8D008BA6EE /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5E0DC118035D8D008BA6EE /* CoreLocation.framework */; };
 		DE5E0DC418035ECF008BA6EE /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE5E0DC318035ECF008BA6EE /* CoreBluetooth.framework */; };
+		DE6773BA18045BC0002EF687 /* Globals.m in Sources */ = {isa = PBXBuildFile; fileRef = DE6773B918045BC0002EF687 /* Globals.m */; };
 		DE9BFA76180347BC0014B563 /* AdvertiseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BFA75180347BC0014B563 /* AdvertiseViewController.m */; };
 		DE9BFA7918034BB50014B563 /* ConsumeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DE9BFA7818034BB50014B563 /* ConsumeViewController.m */; };
 		DEB1385B180342FD00162F21 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DEB1385A180342FD00162F21 /* UIKit.framework */; };
@@ -27,6 +28,8 @@
 /* Begin PBXFileReference section */
 		DE5E0DC118035D8D008BA6EE /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		DE5E0DC318035ECF008BA6EE /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		DE6773B818045BC0002EF687 /* Globals.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Globals.h; sourceTree = "<group>"; };
+		DE6773B918045BC0002EF687 /* Globals.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Globals.m; sourceTree = "<group>"; };
 		DE9BFA74180347BC0014B563 /* AdvertiseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvertiseViewController.h; sourceTree = "<group>"; };
 		DE9BFA75180347BC0014B563 /* AdvertiseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvertiseViewController.m; sourceTree = "<group>"; };
 		DE9BFA7718034BB50014B563 /* ConsumeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConsumeViewController.h; sourceTree = "<group>"; };
@@ -65,6 +68,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE6773B718045B52002EF687 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DE6773B818045BC0002EF687 /* Globals.h */,
+				DE6773B918045BC0002EF687 /* Globals.m */,
+			);
+			name = Helpers;
+			sourceTree = "<group>";
+		};
 		DE9BFA73180343DD0014B563 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +125,7 @@
 			children = (
 				DEB13869180342FD00162F21 /* AppDelegate.h */,
 				DEB1386A180342FD00162F21 /* AppDelegate.m */,
+				DE6773B718045B52002EF687 /* Helpers */,
 				DEB13861180342FD00162F21 /* Supporting Files */,
 				DE9BFA73180343DD0014B563 /* ViewControllers */,
 			);
@@ -204,6 +217,7 @@
 				DEB1386B180342FD00162F21 /* AppDelegate.m in Sources */,
 				DEB1387A180342FD00162F21 /* RoleSelectionViewController.m in Sources */,
 				DE9BFA76180347BC0014B563 /* AdvertiseViewController.m in Sources */,
+				DE6773BA18045BC0002EF687 /* Globals.m in Sources */,
 				DE9BFA7918034BB50014B563 /* ConsumeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
