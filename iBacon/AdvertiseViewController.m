@@ -13,11 +13,11 @@
 @interface AdvertiseViewController ()
 <CBPeripheralManagerDelegate,UIAlertViewDelegate>
 
+@property(nonatomic,weak) IBOutlet UITextView *advertiseLogTextView;
 @property(nonatomic,strong) UIAlertView *alertView;
 @property(nonatomic,strong) NSDictionary *beaconPeripheralData;
 @property(nonatomic,strong) CLBeaconRegion *beaconRegion;
 @property(nonatomic,strong) CBPeripheralManager *peripheralManager;
-@property(nonatomic,weak) IBOutlet UITextView *advertiseLogTextView;
 
 @end
 
